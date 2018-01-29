@@ -58,7 +58,7 @@ app.get('/:id', function(req, res, next) {
 
 
 // app.post('/:id', function(req, res, next) {
-//   const idImage = req.body;
+//   const idImage = req.body.image;
 //   const attemptId = req.params.id;
 //   models.Ids.findOne({
 //     where: {
@@ -88,3 +88,8 @@ app.get('/:id', function(req, res, next) {
 //   })
 //   .catch(next);
 // })
+
+app.use('/', function(err, req, res, next) {
+  console.error.bind(console, err);
+  res.status(err.status || 500).send(err.message);
+})
