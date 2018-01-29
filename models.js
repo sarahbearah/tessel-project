@@ -16,6 +16,9 @@ const accessAttempts = db.define('Attempts', {
   image: {
     type: Sequelize.BLOB,
   },
+  access: {
+    type: Sequelize.BOOLEAN,
+  },
   time: {
     type: Sequelize.DATE,
     defaultValue: Sequelize.NOW

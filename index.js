@@ -21,23 +21,70 @@ app.post('/', function(req, res, next) {
   models.Ids.create({
     rfId: newId
   })
-  .then(() => {
+  .then((createdId) => {
+    console.log('New ID registered: ', createdId.id);
     res.status(200).send('ID Registered')
   })
 })
 
 app.get('/:id', function(req, res, next) {
+  const attemptId = req.params.id;
   models.Ids.findOne({
     where: {
-      rfId: req.params.id
+      rfId: attemptId
     }
   })
   .then(foundModel => {
     if (!foundModel) {
-      res.status(401).send('ID not found, access denied');
+      models.accessAttempts.create({
+        rfId: attemptId,
+        access: false,
+        time: new Date,
+      })
+      .then(() =>
+      res.status(401).send('ID not found, access denied'));
     } else {
-      res.status(200).send('ID found, access granted');
+      models.accessAttempts.create({
+        rfId: attemptId,
+        access: true,
+        time: new Date
+      })
+      .then(() =>
+      res.status(200).send('ID found, access granted'));
     }
   })
   .catch(next);
 })
+
+
+// app.post('/:id', function(req, res, next) {
+//   const idImage = req.body;
+//   const attemptId = req.params.id;
+//   models.Ids.findOne({
+//     where: {
+//       rfId: attemptId
+//     }
+//   })
+//   .then(foundModel => {
+//     if (!foundModel) {
+//       models.accessAttempts.create({
+//         rfId: attemptId,
+//         image: idImage,
+//         access: false,
+//         time: new Date,
+//       })
+//       .then(() =>
+//       res.status(401).send('ID not found, access denied'));
+//     } else {
+//       models.accessAttempts.create({
+//         rfId: attemptId,
+//         image: idImage,
+//         access: true,
+//         time: new Date
+//       })
+//       .then(() =>
+//       res.status(200).send('ID found, access granted'));
+//     }
+//   })
+//   .catch(next);
+// })
